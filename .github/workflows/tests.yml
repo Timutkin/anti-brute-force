@@ -26,7 +26,6 @@ jobs:
       - name: Linters
         uses: golangci/golangci-lint-action@v3
         with:
-          args: --out-format=colored-line-number
           version: ${{ env.GOLANGCI_LINT_VERSION }}
           working-directory: ./
 
