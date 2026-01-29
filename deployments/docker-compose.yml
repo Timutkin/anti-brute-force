@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-abf}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-anti_brute}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-abf}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  anti-brute-force:
+    build:
+      context: ..
+      dockerfile: build/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_DSN: "host=postgres port=5443 user=${POSTGRES_USER:-abf} password=${POSTGRES_PASSWORD:-password} dbname=${POSTGRES_DB:-anti_brute} sslmode=disable"
+      PORT: 8080
+    ports:
+      - "8080:8080"
+    restart: on-failure
+
+volumes:
+  db_data:
