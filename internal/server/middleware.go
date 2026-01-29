@@ -1,13 +1,13 @@
 package server
 
 import (
+	"github.com/rs/zerolog/log"
 	"net"
 	"net/http"
 	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rs/zerolog/log"
 )
 
 func remoteIP(r *http.Request) string {
