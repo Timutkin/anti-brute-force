@@ -1,9 +1,10 @@
-name: Otus homework tests
+name: anti-brute-force
 
 on:
   push:
     branches:
-      - *
+      - main
+      - feature*
 
 env:
   GO111MODULE: "on"
