@@ -2,8 +2,6 @@ module anti-brute-force
 
 go 1.24.0
 
-toolchain go1.24.0
-
 require (
 	github.com/gin-gonic/gin v1.11.0
 	github.com/rs/zerolog v1.34.0
