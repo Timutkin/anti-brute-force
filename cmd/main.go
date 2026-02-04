@@ -1,11 +1,43 @@
 package main
 
-import "anti-brute-force/internal/server"
+import (
+	"context"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+	"github.com/timutkin/anti-brute-force/internal/config"
+	"github.com/timutkin/anti-brute-force/internal/handler"
+	"github.com/timutkin/anti-brute-force/internal/server"
+	"github.com/timutkin/anti-brute-force/internal/service"
+	"os/signal"
+	"syscall"
+)
 
 func main() {
-	s := server.NewServer()
-	err := s.Start()
+	cfg, err := config.NewConfig()
 	if err != nil {
-		return
+		log.Fatal().Err(err).Msg("failed to parse config")
 	}
+	level, err := zerolog.ParseLevel(cfg.Logger.Level)
+	zerolog.SetGlobalLevel(level)
+	blackListService := service.NewInMemoryListService()
+	whiteListService := service.NewInMemoryListService()
+
+	blackListHandler := handler.NewBlackListHandler(handler.NewListHandler(blackListService))
+	whiteListHandler := handler.NewWhiteListHandler(handler.NewListHandler(whiteListService))
+	bruteForceService := service.NewInMemoryBruteForceService(blackListService, whiteListService, cfg.Attempts)
+	s := server.NewServer(blackListHandler, whiteListHandler, handler.NewBruteForceHandler(bruteForceService), cfg.Server)
+
+	go func() {
+		err := s.Start()
+
+		if err != nil {
+			log.Fatal().Err(err).Msg("failed to start server")
+		}
+	}()
+
+	log.Info().Msg("server starts ...")
+	ctx, cancel := signal.NotifyContext(context.Background(),
+		syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
+	defer cancel()
+	<-ctx.Done()
 }

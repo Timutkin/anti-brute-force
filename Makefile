@@ -6,4 +6,7 @@ LDFLAGS := -X main.buildDate=$(shell date -u +%Y-%m-%dT%H:%M:%S) -X main.gitHash
 build:
 	go build -v -o $(BIN_ANTI) -ldflags "$(LDFLAGS)" ./cmd/
 
+run:
+	docker-compose -f ./deployments/docker-compose.yml up
+
 .PHONY: build

@@ -44,6 +44,7 @@ func loggingMiddleware() gin.HandlerFunc {
 			Str("path", path).
 			Int("status", status).
 			Str("latency", latency.String()).
-			Str("IP", ip)
+			Str("IP", ip).
+			Msg("got request")
 	}
 }
