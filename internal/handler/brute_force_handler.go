@@ -1,9 +1,10 @@
 package handler
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/timutkin/anti-brute-force/internal/service"
-	"net/http"
 )
 
 type BruteForceService interface {

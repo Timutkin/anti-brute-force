@@ -1,11 +1,12 @@
 package service
 
 import (
+	"sync"
+	"time"
+
 	"github.com/go-co-op/gocron/v2"
 	"github.com/rs/zerolog/log"
 	"github.com/timutkin/anti-brute-force/internal/config"
-	"sync"
-	"time"
 )
 
 type ListService interface {

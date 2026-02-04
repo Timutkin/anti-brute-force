@@ -2,14 +2,15 @@ package main
 
 import (
 	"context"
+	"os/signal"
+	"syscall"
+
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/timutkin/anti-brute-force/internal/config"
 	"github.com/timutkin/anti-brute-force/internal/handler"
 	"github.com/timutkin/anti-brute-force/internal/server"
 	"github.com/timutkin/anti-brute-force/internal/service"
-	"os/signal"
-	"syscall"
 )
 
 func main() {
