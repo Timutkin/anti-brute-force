@@ -113,7 +113,6 @@ func TestIsCredentialAllowed_SeveralGoroutine(t *testing.T) {
 				ok, _ := bruteForceService.IsCredentialAllowed(uuid.NewString(), password, ip)
 				assert.True(t, ok)
 			}()
-
 		}
 		wg.Wait()
 		ok, _ := bruteForceService.IsCredentialAllowed(uuid.NewString(), password, ip)

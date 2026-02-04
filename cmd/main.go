@@ -19,6 +19,10 @@ func main() {
 		log.Fatal().Err(err).Msg("failed to parse config")
 	}
 	level, err := zerolog.ParseLevel(cfg.Logger.Level)
+	if err != nil {
+		log.Info().Err(err).Msg("failed to parse LOGGING_LEVEL, was set info level")
+		level = zerolog.InfoLevel
+	}
 	zerolog.SetGlobalLevel(level)
 	blackListService := service.NewInMemoryListService()
 	whiteListService := service.NewInMemoryListService()
@@ -30,7 +34,6 @@ func main() {
 
 	go func() {
 		err := s.Start()
-
 		if err != nil {
 			log.Fatal().Err(err).Msg("failed to start server")
 		}

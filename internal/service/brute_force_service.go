@@ -112,7 +112,11 @@ func (i *InMemoryBruteForceService) checkAndIncreaseAttemptsForCredentials(login
 		i.checkAttemptsForCredential(ip, i.ipMap, i.ipMaxAttempt)
 }
 
-func (i *InMemoryBruteForceService) checkAttemptsForCredential(cred string, credMap map[string]*Bucket, maxAttempt int) bool {
+func (i *InMemoryBruteForceService) checkAttemptsForCredential(
+	cred string,
+	credMap map[string]*Bucket,
+	maxAttempt int,
+) bool {
 	i.mu.RLock()
 	v, ok := credMap[cred]
 	i.mu.RUnlock()
@@ -172,7 +176,11 @@ func (i *InMemoryBruteForceService) checkBucketAndIncreaseAttempt(
 	return true
 }
 
-func NewInMemoryBruteForceService(blackService ListService, whiteService ListService, config config.AttemptsConfig) *InMemoryBruteForceService {
+func NewInMemoryBruteForceService(
+	blackService ListService,
+	whiteService ListService,
+	config config.AttemptsConfig,
+) *InMemoryBruteForceService {
 	s, _ := gocron.NewScheduler()
 	s.Start()
 	return &InMemoryBruteForceService{

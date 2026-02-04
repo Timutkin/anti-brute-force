@@ -6,8 +6,10 @@ import (
 	"sync"
 )
 
-var ErrParseCIDR = errors.New("failed to parse CIDR")
-var ErrParseIP = errors.New("failed to parse IP")
+var (
+	ErrParseCIDR = errors.New("failed to parse CIDR")
+	ErrParseIP   = errors.New("failed to parse IP")
+)
 
 type ImMemoryListService struct {
 	list map[string]*net.IPNet
@@ -21,21 +23,21 @@ func NewInMemoryListService() *ImMemoryListService {
 	}
 }
 
-func (b *ImMemoryListService) AddCIDR(CIDR string) error {
-	_, network, err := net.ParseCIDR(CIDR)
+func (b *ImMemoryListService) AddCIDR(cidr string) error {
+	_, network, err := net.ParseCIDR(cidr)
 	if err != nil {
 		return ErrParseCIDR
 	}
 	b.rwm.Lock()
 	defer b.rwm.Unlock()
-	b.list[CIDR] = network
+	b.list[cidr] = network
 	return nil
 }
 
-func (b *ImMemoryListService) DeleteCIDR(CIDR string) error {
+func (b *ImMemoryListService) DeleteCIDR(cidr string) error {
 	b.rwm.Lock()
 	defer b.rwm.Unlock()
-	delete(b.list, CIDR)
+	delete(b.list, cidr)
 	return nil
 }
 
