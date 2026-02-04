@@ -2,8 +2,11 @@ package main
 
 import (
 	"context"
+	"errors"
+	"net/http"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -30,12 +33,18 @@ func main() {
 	blackListHandler := handler.NewBlackListHandler(handler.NewListHandler(blackListService))
 	whiteListHandler := handler.NewWhiteListHandler(handler.NewListHandler(whiteListService))
 	bruteForceService := service.NewInMemoryBruteForceService(blackListService, whiteListService, cfg.Attempts)
-	s := server.NewServer(blackListHandler, whiteListHandler, handler.NewBruteForceHandler(bruteForceService), cfg.Server)
+	s := server.NewServer(blackListHandler, whiteListHandler, handler.NewBruteForceHandler(bruteForceService))
 
+	address := cfg.Server.ListenAddress
+
+	srv := &http.Server{
+		Addr:              address,
+		Handler:           s.GetHandler(),
+		ReadHeaderTimeout: time.Second * 5,
+	}
 	go func() {
-		err := s.Start()
-		if err != nil {
-			log.Fatal().Err(err).Msg("failed to start server")
+		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			log.Fatal().Err(err).Msgf("listen %s", cfg.Server.ListenAddress)
 		}
 	}()
 
@@ -44,4 +53,12 @@ func main() {
 		syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	defer cancel()
 	<-ctx.Done()
+	log.Info().Msg("shutdown server ...")
+
+	ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Error().Err(err).Msg("server shutdown error")
+	}
+	log.Info().Msg("server exiting")
 }

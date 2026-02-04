@@ -1,8 +1,9 @@
 package server
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
-	"github.com/timutkin/anti-brute-force/internal/config"
 	"github.com/timutkin/anti-brute-force/internal/handler"
 )
 
@@ -11,7 +12,6 @@ type Server struct {
 	blackListHandler  handler.BlackListHandler
 	whiteListHandler  handler.WhiteListHandler
 	bruteForceHandler handler.BruteForceHandler
-	cfg               config.Server
 }
 
 func (s *Server) registerHandlers(router *gin.Engine) {
@@ -32,7 +32,6 @@ func NewServer(
 	blackListHandler handler.BlackListHandler,
 	whiteListHandler handler.WhiteListHandler,
 	bruteForceHandler handler.BruteForceHandler,
-	cfg config.Server,
 ) *Server {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
@@ -43,12 +42,12 @@ func NewServer(
 		blackListHandler:  blackListHandler,
 		whiteListHandler:  whiteListHandler,
 		bruteForceHandler: bruteForceHandler,
-		cfg:               cfg,
 	}
 	s.registerHandlers(r)
+	r.Handler()
 	return s
 }
 
-func (s *Server) Start() error {
-	return s.router.Run(s.cfg.ListenAddress)
+func (s *Server) GetHandler() http.Handler {
+	return s.router.Handler()
 }
