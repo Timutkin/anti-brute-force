@@ -6,7 +6,12 @@ services:
       context: ..
       dockerfile: build/Dockerfile
     environment:
-      LISTEN: 8080
+      LISTEN_ADDRESS: ":8081"
     ports:
-      - "8080:8080"
+      - "8081:8081"
     restart: on-failure
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 1G

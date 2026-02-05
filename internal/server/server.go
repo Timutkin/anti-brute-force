@@ -36,7 +36,7 @@ func NewServer(
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
 	r.Use(gin.Recovery())
-	r.Use(loggingMiddleware())
+	// r.Use(loggingMiddleware())
 	s := &Server{
 		router:            r,
 		blackListHandler:  blackListHandler,

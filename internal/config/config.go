@@ -28,7 +28,7 @@ type Logger struct {
 
 func NewConfig() (AntiBruteForceConfig, error) {
 	cfg := AntiBruteForceConfig{
-		Server: Server{ListenAddress: "localhost:8081"},
+		Server: Server{ListenAddress: "localhost:8080"},
 		Attempts: AttemptsConfig{
 			IPMaxAttempts:       1000,
 			PasswordMaxAttempts: 100,

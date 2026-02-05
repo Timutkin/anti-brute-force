@@ -44,11 +44,11 @@ func main() {
 	}
 	go func() {
 		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			log.Fatal().Err(err).Msgf("listen %s", cfg.Server.ListenAddress)
+			log.Fatal().Err(err).Msgf("listen %s", address)
 		}
 	}()
 
-	log.Info().Msg("server starts ...")
+	log.Info().Msgf("server starts on %s ...", address)
 	ctx, cancel := signal.NotifyContext(context.Background(),
 		syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	defer cancel()
