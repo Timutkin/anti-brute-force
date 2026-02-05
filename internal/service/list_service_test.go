@@ -93,7 +93,6 @@ func TestImMemoryListService_IsIPContains(t *testing.T) {
 func TestImMemoryListService_Concurrency(t *testing.T) {
 	service := NewInMemoryListService()
 
-	// Test concurrent access
 	done := make(chan bool, 10)
 
 	for i := 0; i < 10; i++ {
