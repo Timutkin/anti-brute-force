@@ -33,6 +33,7 @@ func (b *BruteForceHandler) AllowAuthorization() func(c *gin.Context) {
 		err := c.ShouldBind(&rq)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, Response{Err: err.Error()})
+			return
 		}
 		result, err := b.bruteForce.IsCredentialAllowed(rq.Login, rq.Password, rq.IP)
 		if err != nil {
