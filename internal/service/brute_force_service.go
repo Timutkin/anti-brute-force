@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/go-co-op/gocron/v2"
-	"github.com/rs/zerolog/log"
 	"github.com/timutkin/anti-brute-force/internal/config"
 )
 
@@ -164,7 +163,6 @@ func (i *InMemoryBruteForceService) checkBucketAndIncreaseAttempt(
 	defer mu.Unlock()
 	if now.Sub(v.firstTime) <= v.interval {
 		if maxAttempts <= v.attempt {
-			log.Debug()
 			return false
 		}
 		v.attempt++
